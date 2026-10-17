@@ -1,0 +1,19 @@
+{{define "web_pagination"}}
+{{with .Pager}}
+{{if gt .TotalPages 1}}
+<nav class="mt-4" aria-label="分页">
+  <ul class="pagination justify-content-center">
+    <li class="page-item {{if not .HasPrev}}disabled{{end}}">
+      <a class="page-link" href="{{if .HasPrev}}{{.PrevURL}}{{else}}#{{end}}">上一页</a>
+    </li>
+    {{range .Links}}
+    <li class="page-item {{if .Active}}active{{end}}"><a class="page-link" href="{{.URL}}">{{.Page}}</a></li>
+    {{end}}
+    <li class="page-item {{if not .HasNext}}disabled{{end}}">
+      <a class="page-link" href="{{if .HasNext}}{{.NextURL}}{{else}}#{{end}}">下一页</a>
+    </li>
+  </ul>
+</nav>
+{{end}}
+{{end}}
+{{end}}

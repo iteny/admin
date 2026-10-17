@@ -1,0 +1,39 @@
+{{define "layout"}}<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="csrf-token" content="{{.CSRFToken}}">
+  <title>{{.Title}} - {{.SiteName}}</title>
+  <link rel="stylesheet" href="/static/vendor/tabler/css/tabler.min.css">
+  <link rel="stylesheet" href="/static/vendor/tabler/css/tabler-themes.min.css">
+  <link rel="stylesheet" href="/static/vendor/tabler-icons/tabler-icons.min.css">
+  <link rel="stylesheet" href="/static/css/admin.css">
+</head>
+<body class="layout-fluid">
+<script src="/static/vendor/tabler/js/tabler-theme.min.js"></script>
+<div class="page">
+  {{template "admin_sidebar" .}}
+  <div class="page-wrapper">
+    {{template "admin_header" .}}
+    <div class="page-body">
+      <div class="container-xl">
+        {{template "flash" .}}
+        {{template "content" .}}
+      </div>
+    </div>
+    {{template "admin_footer" .}}
+  </div>
+</div>
+{{template "confirm_modal" .}}
+<script src="/static/vendor/tabler/libs/apexcharts/dist/apexcharts.min.js"></script>
+<script src="/static/vendor/tabler/libs/sortablejs/Sortable.min.js"></script>
+<script src="/static/vendor/tabler/libs/dropzone/dist/dropzone-min.js"></script>
+<script src="/static/vendor/tabler/libs/tom-select/dist/js/tom-select.base.min.js"></script>
+<script src="/static/vendor/tabler/libs/hugerte/hugerte.min.js"></script>
+<script src="/static/vendor/tabler/libs/litepicker/dist/litepicker.js"></script>
+<script src="/static/vendor/tabler/libs/list.js/dist/list.min.js"></script>
+<script src="/static/vendor/tabler/js/tabler.min.js" defer></script>
+<script src="/static/js/admin.js?v={{.Version}}-media4" defer></script>
+</body>
+</html>{{end}}

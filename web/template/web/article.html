@@ -1,0 +1,45 @@
+{{define "content"}}
+<nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="/">首页</a></li>{{if .Category}}<li class="breadcrumb-item"><a href="/category/{{.Category.Slug}}">{{.Category.Name}}</a></li>{{end}}<li class="breadcrumb-item active" aria-current="page">{{.Article.Title}}</li></ol></nav>
+<article class="row g-4">
+  <div class="col-lg-9">
+    <header class="mb-4">
+      <h1 class="display-5 fw-bold">{{.Article.Title}}</h1>
+      <div class="text-secondary d-flex flex-wrap gap-3 mt-3">
+        <span><i class="ti ti-user me-1"></i>{{.Article.Author.Nickname}}</span>
+        <span><i class="ti ti-calendar me-1"></i>{{fmtDate .Article.PublishedAt}}</span>
+        <span><i class="ti ti-eye me-1"></i>{{.Article.ViewCount}} 次浏览</span>
+        {{if .Category}}<a href="/category/{{.Category.Slug}}" class="text-secondary"><i class="ti ti-folder me-1"></i>{{.Category.Name}}</a>{{end}}
+      </div>
+    </header>
+    {{if .Article.CoverURL}}<img src="{{.Article.CoverURL}}" class="img-fluid rounded mb-4" alt="{{.Article.Title}}">{{end}}
+    <div class="article-content fs-4 lh-lg">
+      {{if eq (printf "%s" .Article.ContentType) "markdown"}}
+      <pre class="p-4 bg-surface-secondary rounded">{{.Article.Content}}</pre>
+      {{else}}
+      {{safeHTML .Article.Content}}
+      {{end}}
+    </div>
+    {{if .Article.SubContent}}
+    <div class="article-subcontent mt-4 pt-4 border-top lh-lg">
+      {{safeHTML .Article.SubContent}}
+    </div>
+    {{end}}
+    <div class="d-flex flex-wrap gap-2 mt-4">
+      {{range .Article.Tags}}<a href="/tag/{{.Slug}}" class="badge bg-blue-lt text-decoration-none"># {{.Name}}</a>{{end}}
+    </div>
+    <div class="row g-3 mt-4">
+      <div class="col-md-6">{{with .Prev}}<a href="/article/{{.Slug}}" class="card card-link h-100"><div class="card-body"><div class="text-secondary small">上一篇</div><div class="fw-medium text-truncate">{{.Title}}</div></div></a>{{else}}<div class="text-secondary">没有上一篇</div>{{end}}</div>
+      <div class="col-md-6 text-md-end">{{with .Next}}<a href="/article/{{.Slug}}" class="card card-link h-100"><div class="card-body"><div class="text-secondary small">下一篇</div><div class="fw-medium text-truncate">{{.Title}}</div></div></a>{{else}}<div class="text-secondary">没有下一篇</div>{{end}}</div>
+    </div>
+  </div>
+  <aside class="col-lg-3">
+    <div class="card">
+      <div class="card-header"><h3 class="card-title">相关文章</h3></div>
+      <div class="list-group list-group-flush">
+        {{range .Related}}<a href="/article/{{.Slug}}" class="list-group-item list-group-item-action"><div class="text-truncate">{{.Title}}</div><div class="text-secondary small">{{fmtDate .PublishedAt}}</div></a>{{else}}<div class="list-group-item text-secondary">暂无相关文章</div>{{end}}
+      </div>
+    </div>
+  </aside>
+</article>
+<script type="application/ld+json">{{json .JSONLD}}</script>
+{{end}}

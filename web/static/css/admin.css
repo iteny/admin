@@ -1,0 +1,107 @@
+:root {
+  --cms-sidebar-width: 15rem;
+}
+
+body.layout-fluid .page {
+  min-height: 100vh;
+}
+
+.navbar-vertical {
+  width: var(--cms-sidebar-width);
+}
+
+.navbar-vertical .navbar-brand {
+  min-height: 4rem;
+  display: flex;
+  align-items: center;
+  padding-inline: 1rem;
+}
+
+.page-wrapper {
+  min-width: 0;
+}
+
+.page-header {
+  margin-bottom: 1rem;
+}
+
+.card-table > :not(caption) > * > * {
+  vertical-align: middle;
+}
+
+.article-content {
+  overflow-wrap: anywhere;
+}
+
+.article-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--border-radius);
+}
+
+.article-content pre {
+  overflow-x: auto;
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  background: var(--bg-surface-secondary);
+}
+
+.article-content table {
+  width: 100%;
+  margin: 1rem 0;
+}
+
+.article-content table th,
+.article-content table td {
+  padding: 0.5rem;
+  border: 1px solid var(--border-color);
+}
+
+.cursor-move {
+  cursor: move;
+}
+
+.drag-handle {
+  display: inline-flex;
+  padding: 0.25rem;
+}
+
+.media-picker-item {
+  cursor: pointer;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.media-picker-item:hover {
+  border-color: var(--primary);
+  transform: translateY(-1px);
+}
+
+.dz-message {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: var(--secondary);
+}
+
+.dropzone {
+  border: 2px dashed var(--border-color);
+  border-radius: var(--border-radius);
+  background: var(--bg-surface-secondary);
+}
+
+.dropzone.dz-drag-hover {
+  border-color: var(--primary);
+}
+
+@media (max-width: 991.98px) {
+  .navbar-vertical {
+    width: 100%;
+  }
+}
+
+@media print {
+  .navbar-vertical,
+  .navbar,
+  .footer {
+    display: none !important;
+  }
+}

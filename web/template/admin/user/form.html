@@ -1,0 +1,37 @@
+{{define "content"}}
+<div class="page-header d-print-none">
+  <div class="row g-2 align-items-center">
+    <div class="col"><div class="page-pretitle">{{.Pretitle}}</div><h2 class="page-title">{{.Title}}</h2></div>
+    <div class="col-auto ms-auto"><a href="/admin/users" class="btn btn-ghost-secondary">返回列表</a></div>
+  </div>
+</div>
+{{if .Error}}<div class="alert alert-danger">{{.Error}}</div>{{end}}
+<form method="post" action="{{.ActionURL}}" class="row row-cards">
+  <input type="hidden" name="_csrf" value="{{.CSRFToken}}">
+  {{if .IsEdit}}<input type="hidden" name="_method" value="PUT">{{end}}
+  <div class="col-lg-8">
+    <div class="card"><div class="card-body">
+      <div class="row">
+        <div class="col-md-6 mb-3"><label class="form-label required">用户名</label><input type="text" class="form-control" name="username" value="{{.User.Username}}" required maxlength="50" {{if .IsEdit}}readonly{{end}}></div>
+        <div class="col-md-6 mb-3"><label class="form-label">昵称</label><input type="text" class="form-control" name="nickname" value="{{.User.Nickname}}" maxlength="50"></div>
+        <div class="col-md-6 mb-3"><label class="form-label">邮箱</label><input type="email" class="form-control" name="email" value="{{.User.Email}}" maxlength="100"></div>
+        <div class="col-md-6 mb-3"><label class="form-label">{{if .IsEdit}}新密码（留空不修改）{{else}}密码{{end}}</label><input type="password" class="form-control" name="password" minlength="8" {{if not .IsEdit}}required{{end}}></div>
+        <div class="col-md-6 mb-3"><label class="form-label required">角色</label><select class="form-select" name="role_id" required>{{range .Roles}}<option value="{{.ID}}" {{if eq $.User.RoleID .ID}}selected{{end}}>{{.Name}}</option>{{end}}</select></div>
+        <div class="col-md-6 mb-3"><label class="form-label">状态</label><select class="form-select" name="status"><option value="1" {{if eq .User.Status 1}}selected{{end}}>启用</option><option value="0" {{if eq .User.Status 0}}selected{{end}}>禁用</option></select></div>
+        <div class="col-12 mb-3"><label class="form-label">头像 URL</label><div class="input-group"><input type="text" class="form-control" name="avatar" id="user-avatar" value="{{.User.Avatar}}"><button type="button" class="btn btn-outline-secondary media-picker" data-target="user-avatar">选择</button></div></div>
+        <div class="col-12"><label class="form-label">备注</label><textarea class="form-control" name="remark" rows="2" maxlength="255">{{.User.Remark}}</textarea></div>
+      </div>
+    </div><div class="card-footer d-flex gap-2"><button class="btn btn-primary" type="submit">保存用户</button><a href="/admin/users" class="btn btn-ghost-secondary">取消</a></div></div>
+  </div>
+</form>
+
+{{if .IsEdit}}
+<div class="card mt-3" style="max-width: 42rem">
+  <div class="card-header"><h3 class="card-title">重置密码</h3></div>
+  <form method="post" action="/admin/users/{{.User.ID}}/reset-password">
+    <input type="hidden" name="_csrf" value="{{.CSRFToken}}">
+    <div class="card-body"><div class="input-group"><input type="password" class="form-control" name="password" placeholder="输入新密码（至少 8 位）" minlength="8" required><button class="btn btn-outline-danger" type="submit" onclick="return confirm('确定重置该用户密码？')">重置密码</button></div></div>
+  </form>
+</div>
+{{end}}
+{{end}}

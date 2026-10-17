@@ -1,0 +1,24 @@
+{{define "content"}}
+<div class="d-flex align-items-center justify-content-between mb-2">
+  <h3 class="m-0">选择媒体</h3>
+  <a href="/admin/media" target="_blank" class="btn btn-sm btn-ghost-secondary">管理媒体库</a>
+</div>
+<div class="row row-cards">
+  {{range .Data.List}}
+  <div class="col-6 col-md-4">
+    <div class="card card-sm media-picker-item" data-url="{{.URL}}" data-id="{{.ID}}" role="button" tabindex="0">
+      <div class="card-body p-2 text-center">
+        {{if hasPrefix .MimeType "image/"}}
+        <img src="{{thumbURL .URL}}" alt="{{.OriginalName}}" class="img-fluid rounded" style="height:110px;object-fit:cover;width:100%">
+        {{else}}
+        <div class="text-secondary py-5"><i class="ti ti-file" style="font-size:2rem"></i></div>
+        {{end}}
+        <div class="text-truncate small mt-2">{{.OriginalName}}</div>
+      </div>
+    </div>
+  </div>
+  {{else}}
+  <div class="col-12 text-center text-secondary py-5">暂无媒体文件</div>
+  {{end}}
+</div>
+{{end}}

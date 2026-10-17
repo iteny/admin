@@ -1,0 +1,51 @@
+{{define "content"}}
+<div class="page-header d-print-none">
+  <div class="row g-2 align-items-center">
+    <div class="col"><div class="page-pretitle">{{.Pretitle}}</div><h2 class="page-title">{{.Title}}</h2></div>
+    <div class="col-auto ms-auto"><a href="/admin/users/create" class="btn btn-primary"><i class="ti ti-plus me-1"></i>新增用户</a></div>
+  </div>
+</div>
+<div class="card">
+  <div class="card-header">
+    <form class="d-flex gap-2" method="get" action="/admin/users">
+      <input type="text" class="form-control" name="keyword" value="{{.QueryValues.Get "keyword"}}" placeholder="搜索用户名/昵称/邮箱">
+      <select class="form-select w-auto" name="status">
+        <option value="">全部状态</option>
+        <option value="1" {{if eq .Status "1"}}selected{{end}}>启用</option>
+        <option value="0" {{if eq .Status "0"}}selected{{end}}>禁用</option>
+      </select>
+      <select class="form-select w-auto" name="role_id">
+        <option value="">全部角色</option>
+        {{range .Roles}}<option value="{{.ID}}" {{if eq $.RoleID .ID}}selected{{end}}>{{.Name}}</option>{{end}}
+      </select>
+      <button class="btn btn-primary">筛选</button>
+      <a href="/admin/users" class="btn btn-ghost-secondary">重置</a>
+    </form>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-vcenter card-table">
+      <thead><tr><th>用户</th><th>角色</th><th>状态</th><th>最后登录</th><th>操作</th></tr></thead>
+      <tbody>
+        {{range .Data.List}}
+        <tr>
+          <td><div class="d-flex align-items-center">
+            {{if .Avatar}}<span class="avatar avatar-sm me-2" style="background-image:url('{{.Avatar}}')"></span>{{else}}<span class="avatar avatar-sm bg-primary-lt me-2">{{initial .Nickname}}</span>{{end}}
+            <div><div class="fw-medium">{{.Nickname}}</div><div class="text-secondary small">{{.Username}} · {{.Email}}</div></div>
+          </div></td>
+          <td>{{.Role.Name}}</td>
+          <td><span class="badge {{if eq .Status 1}}bg-green-lt{{else}}bg-secondary-lt{{end}}">{{if eq .Status 1}}启用{{else}}禁用{{end}}</span></td>
+          <td class="text-secondary">{{fmtTime .LastLoginAt}}<div class="small">{{.LastLoginIP}}</div></td>
+          <td><div class="btn-list flex-nowrap">
+            <a href="/admin/users/{{.ID}}/edit" class="btn btn-sm btn-ghost-secondary">编辑</a>
+            <button type="button" class="btn btn-sm btn-ghost-danger confirm-delete" data-url="/admin/users/{{.ID}}/delete" data-name="{{.Username}}">删除</button>
+          </div></td>
+        </tr>
+        {{else}}
+        <tr><td colspan="5" class="text-center text-secondary py-6">暂无用户</td></tr>
+        {{end}}
+      </tbody>
+    </table>
+  </div>
+  {{template "pagination" .}}
+</div>
+{{end}}

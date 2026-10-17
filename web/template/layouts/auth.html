@@ -1,0 +1,28 @@
+{{define "layout"}}<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="csrf-token" content="{{.CSRFToken}}">
+  <title>{{.Title}} - {{.SiteName}}</title>
+  <link rel="stylesheet" href="/static/vendor/tabler/css/tabler.min.css">
+  <link rel="stylesheet" href="/static/vendor/tabler/css/tabler-themes.min.css">
+  <link rel="stylesheet" href="/static/vendor/tabler-icons/tabler-icons.min.css">
+  <link rel="stylesheet" href="/static/css/admin.css">
+</head>
+<body class="d-flex flex-column bg-surface-secondary">
+<script src="/static/vendor/tabler/js/tabler-theme.min.js"></script>
+<div class="page page-center">
+  <div class="container container-tight py-4">
+    <div class="text-center mb-4">
+      <a href="/" class="navbar-brand navbar-brand-autodark">
+        <span class="fs-1 fw-bold">{{.SiteName}}</span>
+      </a>
+    </div>
+    {{template "content" .}}
+    <div class="text-center text-secondary mt-3">{{.SiteName}} · {{.Title}}</div>
+  </div>
+</div>
+<script src="/static/vendor/tabler/js/tabler.min.js" defer></script>
+</body>
+</html>{{end}}

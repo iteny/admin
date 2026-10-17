@@ -1,0 +1,52 @@
+{{define "admin_sidebar"}}
+<aside class="navbar navbar-vertical navbar-expand-lg" data-bs-theme="dark">
+  <div class="container-fluid">
+    <h1 class="navbar-brand navbar-brand-autodark">
+      <a href="/admin" class="text-decoration-none">
+        <span class="fs-2 fw-bold">{{.SiteName}}</span>
+      </a>
+    </h1>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-menu" aria-controls="sidebar-menu" aria-expanded="false" aria-label="切换导航">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="sidebar-menu">
+      <ul class="navbar-nav pt-lg-3">
+        {{range .Menus}}
+          {{if .Children}}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle {{if menuActive $.CurrentPath .Menu.Path}}active{{end}}" href="#navbar-{{.Menu.ID}}" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button" aria-expanded="false">
+              <span class="nav-link-icon">{{if .Menu.Icon}}<i class="ti ti-{{.Menu.Icon}}"></i>{{end}}</span>
+              <span class="nav-link-title">{{.Menu.Name}}</span>
+            </a>
+            <div class="dropdown-menu">
+              {{range .Children}}
+              <a class="dropdown-item {{if menuActive $.CurrentPath .Menu.Path}}active{{end}}" href="{{.Menu.Path}}">
+                {{if .Menu.Icon}}<i class="ti ti-{{.Menu.Icon}} me-2"></i>{{end}}{{.Menu.Name}}
+              </a>
+              {{end}}
+            </div>
+          </li>
+          {{else}}
+          <li class="nav-item">
+            <a class="nav-link {{if menuActive $.CurrentPath .Menu.Path}}active{{end}}" href="{{.Menu.Path}}">
+              <span class="nav-link-icon">{{if .Menu.Icon}}<i class="ti ti-{{.Menu.Icon}}"></i>{{end}}</span>
+              <span class="nav-link-title">{{.Menu.Name}}</span>
+            </a>
+          </li>
+          {{end}}
+        {{end}}
+      </ul>
+      <div class="navbar-side mt-auto pt-3">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="/" target="_blank" rel="noopener">
+              <span class="nav-link-icon"><i class="ti ti-external-link"></i></span>
+              <span class="nav-link-title">访问前台</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</aside>
+{{end}}

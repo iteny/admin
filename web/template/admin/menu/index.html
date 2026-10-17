@@ -1,0 +1,60 @@
+{{define "content"}}
+<div class="page-header d-print-none">
+  <div class="row g-2 align-items-center">
+    <div class="col"><div class="page-pretitle">{{.Pretitle}}</div><h2 class="page-title">{{.Title}}</h2></div>
+    <div class="col-auto ms-auto"><button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-menu" onclick="resetMenuForm()"><i class="ti ti-plus me-1"></i>新增菜单</button></div>
+  </div>
+</div>
+{{if .Error}}<div class="alert alert-danger">{{.Error}}</div>{{end}}
+<div class="card">
+  <div class="table-responsive">
+    <table class="table table-vcenter card-table">
+      <thead><tr><th class="w-1"></th><th>名称</th><th>路径</th><th>权限码</th><th>可见</th><th>排序</th><th>操作</th></tr></thead>
+      <tbody id="menu-tree">{{template "menu_rows" .Tree}}</tbody>
+    </table>
+  </div>
+</div>
+
+<div class="modal modal-blur fade" id="modal-menu" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <form class="modal-content" method="post" action="/admin/menus" id="menu-form">
+      <input type="hidden" name="_csrf" value="{{.CSRFToken}}">
+      <input type="hidden" name="_method" value="">
+      <div class="modal-header"><h5 class="modal-title" id="menu-modal-title">新增菜单</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="关闭"></button></div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-8 mb-3"><label class="form-label required">名称</label><input type="text" class="form-control" name="name" id="menu-name" required maxlength="50"></div>
+          <div class="col-md-4 mb-3"><label class="form-label">图标</label><input type="text" class="form-control" name="icon" id="menu-icon" placeholder="ti 图标名，如 file-text"></div>
+        </div>
+        <div class="mb-3"><label class="form-label">父菜单</label><select class="form-select" name="parent_id" id="menu-parent"><option value="0">顶级菜单</option>{{range .Options}}<option value="{{.Menu.ID}}">{{if gt .Depth 0}}　{{end}}{{.Menu.Name}}</option>{{end}}</select></div>
+        <div class="row">
+          <div class="col-md-8 mb-3"><label class="form-label">路径</label><input type="text" class="form-control" name="path" id="menu-path" placeholder="/admin/articles"></div>
+          <div class="col-md-4 mb-3"><label class="form-label">排序</label><input type="number" class="form-control" name="sort" id="menu-sort" value="0"></div>
+        </div>
+        <div class="mb-3"><label class="form-label">权限码</label><select class="form-select" name="permission_code" id="menu-permission"><option value="">所有登录用户可见</option>{{range .Groups}}{{range .Perms}}<option value="{{.Code}}">{{.Name}}（{{.Code}}）</option>{{end}}{{end}}</select></div>
+        <div class="mb-3"><label class="form-check"><input class="form-check-input" type="checkbox" name="is_visible" id="menu-visible" checked><span class="form-check-label">显示在侧边栏</span></label></div>
+        <div><label class="form-check"><input class="form-check-input" type="checkbox" name="is_external" id="menu-external"><span class="form-check-label">外部链接（新窗口打开）</span></label></div>
+      </div>
+      <div class="modal-footer"><button type="button" class="btn btn-link" data-bs-dismiss="modal">取消</button><button type="submit" class="btn btn-primary">保存</button></div>
+    </form>
+  </div>
+</div>
+{{end}}
+
+{{define "menu_rows"}}
+{{range .}}
+<tr data-id="{{.Menu.ID}}" data-parent="{{.Menu.ParentID}}" data-name="{{.Menu.Name}}" data-icon="{{.Menu.Icon}}" data-path="{{.Menu.Path}}" data-permission="{{.Menu.PermissionCode}}" data-sort="{{.Menu.Sort}}" data-visible="{{.Menu.IsVisible}}" data-external="{{.Menu.IsExternal}}">
+  <td><span class="drag-handle cursor-move text-secondary"><i class="ti ti-grip-vertical"></i></span></td>
+  <td><span class="text-secondary">{{if gt .Depth 0}}└─{{end}}</span> {{if .Menu.Icon}}<i class="ti ti-{{.Menu.Icon}} me-1"></i>{{end}}<strong>{{.Menu.Name}}</strong></td>
+  <td><code>{{.Menu.Path}}</code></td>
+  <td class="text-secondary">{{if .Menu.PermissionCode}}{{.Menu.PermissionCode}}{{else}}—{{end}}</td>
+  <td>{{if .Menu.IsVisible}}<span class="badge bg-green-lt">可见</span>{{else}}<span class="badge bg-secondary-lt">隐藏</span>{{end}}</td>
+  <td>{{.Menu.Sort}}</td>
+  <td><div class="btn-list flex-nowrap">
+    <button type="button" class="btn btn-sm btn-ghost-secondary" onclick="editMenu(this)">编辑</button>
+    <button type="button" class="btn btn-sm btn-ghost-danger confirm-delete" data-url="/admin/menus/{{.Menu.ID}}/delete" data-name="{{.Menu.Name}}">删除</button>
+  </div></td>
+</tr>
+{{template "menu_rows" .Children}}
+{{end}}
+{{end}}

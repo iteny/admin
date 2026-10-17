@@ -1,0 +1,46 @@
+{{define "content"}}
+<div class="page-header d-print-none">
+  <div class="row g-2 align-items-center">
+    <div class="col"><div class="page-pretitle">{{.Pretitle}}</div><h2 class="page-title">{{.Title}}</h2></div>
+    <div class="col-auto ms-auto"><button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-tag" onclick="resetTagForm()"><i class="ti ti-plus me-1"></i>新增标签</button></div>
+  </div>
+</div>
+{{if .Error}}<div class="alert alert-danger">{{.Error}}</div>{{end}}
+<div class="card">
+  <div class="table-responsive">
+    <table class="table table-vcenter card-table">
+      <thead><tr><th>名称</th><th>Slug</th><th>使用数</th><th class="w-1">操作</th></tr></thead>
+      <tbody>
+        {{range .Tags}}
+        <tr data-id="{{.ID}}" data-name="{{.Name}}" data-slug="{{.Slug}}">
+          <td><span class="badge bg-blue-lt">{{.Name}}</span></td>
+          <td class="text-secondary">{{.Slug}}</td>
+          <td>{{.UseCount}}</td>
+          <td><div class="btn-list flex-nowrap">
+            <button type="button" class="btn btn-sm btn-ghost-secondary" onclick="editTag(this)">编辑</button>
+            <button type="button" class="btn btn-sm btn-ghost-danger confirm-delete" data-url="/admin/tags/{{.ID}}/delete" data-name="{{.Name}}">删除</button>
+          </div></td>
+        </tr>
+        {{else}}
+        <tr><td colspan="4" class="text-center text-secondary py-6">暂无标签</td></tr>
+        {{end}}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="modal modal-blur fade" id="modal-tag" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+    <form class="modal-content" method="post" action="/admin/tags" id="tag-form">
+      <input type="hidden" name="_csrf" value="{{.CSRFToken}}">
+      <input type="hidden" name="_method" value="">
+      <div class="modal-header"><h5 class="modal-title" id="tag-modal-title">新增标签</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="关闭"></button></div>
+      <div class="modal-body">
+        <div class="mb-3"><label class="form-label required">名称</label><input type="text" class="form-control" name="name" id="tag-name" required maxlength="50"></div>
+        <div><label class="form-label">Slug</label><input type="text" class="form-control" name="slug" id="tag-slug" maxlength="100" placeholder="留空自动生成"></div>
+      </div>
+      <div class="modal-footer"><button type="button" class="btn btn-link" data-bs-dismiss="modal">取消</button><button type="submit" class="btn btn-primary">保存</button></div>
+    </form>
+  </div>
+</div>
+{{end}}

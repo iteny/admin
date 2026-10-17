@@ -1,0 +1,35 @@
+{{define "content"}}
+<nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="/">首页</a></li>{{if .Tag}}<li class="breadcrumb-item active">{{.Tag.Name}}</li>{{else}}{{if .Category}}<li class="breadcrumb-item active">{{.Category.Name}}</li>{{end}}{{end}}</ol></nav>
+<header class="mb-4">
+  {{if .Tag}}
+  <h1 class="display-6 fw-bold">标签：{{.Tag.Name}}</h1>
+  <p class="text-secondary">共 {{.Total}} 篇文章</p>
+  {{else}}
+  <h1 class="display-6 fw-bold">{{.Category.Name}}</h1>
+  {{if .Category.Description}}<p class="text-secondary">{{.Category.Description}}</p>{{end}}
+  <p class="text-secondary">共 {{.Total}} 篇文章</p>
+  {{end}}
+</header>
+{{if .Children}}
+<div class="mb-4 d-flex flex-wrap gap-2">
+  {{range .Children}}<a href="/category/{{.Category.Slug}}" class="btn btn-sm btn-outline-secondary">{{.Category.Name}}</a>{{end}}
+</div>
+{{end}}
+<div class="row g-3">
+  {{range .Articles}}
+  <div class="col-md-6 col-xl-4">
+    <article class="card card-link h-100">
+      {{if .CoverURL}}<a href="/article/{{.Slug}}"><img src="{{.CoverURL}}" class="card-img-top" alt="{{.Title}}" style="height:160px;object-fit:cover"></a>{{end}}
+      <div class="card-body">
+        <div class="text-secondary small mb-2">{{.Category.Name}} · {{fmtDate .PublishedAt}} · {{.ViewCount}} 次浏览</div>
+        <h2 class="h4 mb-2"><a href="/article/{{.Slug}}" class="text-reset">{{.Title}}</a></h2>
+        <p class="text-secondary mb-0">{{truncate .Summary 90}}</p>
+      </div>
+    </article>
+  </div>
+  {{else}}
+  <div class="col-12"><div class="card"><div class="card-body text-center text-secondary py-6">暂无文章</div></div></div>
+  {{end}}
+</div>
+{{template "web_pagination" .}}
+{{end}}

@@ -1,0 +1,24 @@
+{{define "pagination"}}
+{{if gt .Data.TotalPages 1}}
+<div class="card-footer d-flex align-items-center">
+  <p class="m-0 text-secondary">共 {{.Data.Total}} 条，第 {{.Data.Page}} / {{.Data.TotalPages}} 页</p>
+  <ul class="pagination m-0 ms-auto">
+    <li class="page-item {{if not .Data.HasPrev}}disabled{{end}}">
+      <a class="page-link" href="{{.BaseURL}}?{{queryWith .QueryValues "page" (sub .Data.Page 1)}}">上一页</a>
+    </li>
+    {{range .Data.Pages}}
+    <li class="page-item {{if eq . $.Data.Page}}active{{end}}">
+      <a class="page-link" href="{{$.BaseURL}}?{{queryWith $.QueryValues "page" .}}">{{.}}</a>
+    </li>
+    {{end}}
+    <li class="page-item {{if not .Data.HasNext}}disabled{{end}}">
+      <a class="page-link" href="{{.BaseURL}}?{{queryWith .QueryValues "page" (add .Data.Page 1)}}">下一页</a>
+    </li>
+  </ul>
+</div>
+{{else}}
+<div class="card-footer d-flex align-items-center">
+  <p class="m-0 text-secondary">共 {{.Data.Total}} 条</p>
+</div>
+{{end}}
+{{end}}

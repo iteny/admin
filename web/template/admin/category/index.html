@@ -1,0 +1,67 @@
+{{define "content"}}
+<div class="page-header d-print-none">
+  <div class="row g-2 align-items-center">
+    <div class="col"><div class="page-pretitle">{{.Pretitle}}</div><h2 class="page-title">{{.Title}}</h2></div>
+    <div class="col-auto ms-auto"><button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-category" onclick="resetCategoryForm()"><i class="ti ti-plus me-1"></i>新增分类</button></div>
+  </div>
+</div>
+{{if .Error}}<div class="alert alert-danger">{{.Error}}</div>{{end}}
+<div class="card">
+  <div class="card-header">
+    <h3 class="card-title">分类树</h3>
+    <div class="card-actions text-secondary">拖拽排序：拖动左侧手柄后自动保存</div>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-vcenter card-table">
+      <thead><tr><th class="w-1"></th><th>名称</th><th>Slug</th><th>文章数</th><th>状态</th><th>排序</th><th class="w-1">操作</th></tr></thead>
+      <tbody id="category-tree">
+        {{template "category_rows" .Tree}}
+      </tbody>
+    </table>
+  </div>
+  <div class="card-footer text-secondary">共 {{len .Tree}} 个顶级分类</div>
+</div>
+
+<div class="modal modal-blur fade" id="modal-category" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <form class="modal-content" method="post" action="/admin/categories" id="category-form">
+      <input type="hidden" name="_csrf" value="{{.CSRFToken}}">
+      <input type="hidden" name="_method" value="">
+      <div class="modal-header"><h5 class="modal-title" id="category-modal-title">新增分类</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="关闭"></button></div>
+      <div class="modal-body">
+        <div class="mb-3"><label class="form-label required">名称</label><input type="text" class="form-control" name="name" id="category-name" required maxlength="50"></div>
+        <div class="mb-3"><label class="form-label">Slug</label><input type="text" class="form-control" name="slug" id="category-slug" maxlength="100" placeholder="留空自动生成"></div>
+        <div class="mb-3"><label class="form-label">父分类</label><select class="form-select" name="parent_id" id="category-parent"><option value="0">顶级分类</option>{{range .Options}}<option value="{{.ID}}">{{if gt .Depth 0}}　{{end}}{{.Name}}</option>{{end}}</select></div>
+        <div class="row">
+          <div class="col-md-6 mb-3"><label class="form-label">排序</label><input type="number" class="form-control" name="sort" id="category-sort" value="0"></div>
+          <div class="col-md-6 mb-3"><label class="form-label">状态</label><select class="form-select" name="status" id="category-status"><option value="1">启用</option><option value="0">禁用</option></select></div>
+        </div>
+        <div class="mb-3"><label class="form-label">描述</label><textarea class="form-control" name="description" id="category-description" rows="2" maxlength="255"></textarea></div>
+        <div class="mb-3"><label class="form-label">封面图</label><div class="input-group"><input type="text" class="form-control" name="cover_url" id="category-cover"><button type="button" class="btn btn-outline-secondary media-picker" data-target="category-cover">选择</button></div></div>
+        <details><summary class="cursor-pointer">SEO 设置</summary><div class="mt-3"><div class="mb-2"><input type="text" class="form-control" name="seo_title" id="category-seo-title" placeholder="SEO 标题"></div><div class="mb-2"><input type="text" class="form-control" name="seo_keywords" id="category-seo-keywords" placeholder="SEO 关键词"></div><textarea class="form-control" name="seo_description" id="category-seo-description" rows="2" placeholder="SEO 描述"></textarea></div></details>
+      </div>
+      <div class="modal-footer"><button type="button" class="btn btn-link" data-bs-dismiss="modal">取消</button><button type="submit" class="btn btn-primary">保存</button></div>
+    </form>
+  </div>
+</div>
+{{end}}
+
+{{define "category_rows"}}
+{{range .}}
+<tr data-id="{{.Category.ID}}" data-parent="{{.Category.ParentID}}" data-name="{{.Category.Name}}" data-slug="{{.Category.Slug}}" data-sort="{{.Category.Sort}}" data-status="{{.Category.Status}}" data-description="{{.Category.Description}}" data-cover="{{.Category.CoverURL}}" data-seo-title="{{.Category.SeoTitle}}" data-seo-keywords="{{.Category.SeoKeywords}}" data-seo-description="{{.Category.SeoDescription}}">
+  <td><span class="drag-handle cursor-move text-secondary" title="拖拽排序"><i class="ti ti-grip-vertical"></i></span></td>
+  <td><span class="text-secondary">{{if gt .Depth 0}}└─{{end}}</span> <strong>{{.Category.Name}}</strong></td>
+  <td class="text-secondary">{{.Category.Slug}}</td>
+  <td>{{.ArticleCount}}</td>
+  <td><span class="badge {{if eq .Category.Status 1}}bg-green-lt{{else}}bg-secondary-lt{{end}}">{{if eq .Category.Status 1}}启用{{else}}禁用{{end}}</span></td>
+  <td>{{.Category.Sort}}</td>
+  <td>
+    <div class="btn-list flex-nowrap">
+      <button type="button" class="btn btn-sm btn-ghost-secondary edit-category" onclick="editCategory(this)">编辑</button>
+      <button type="button" class="btn btn-sm btn-ghost-danger confirm-delete" data-url="/admin/categories/{{.Category.ID}}/delete" data-name="{{.Category.Name}}">删除</button>
+    </div>
+  </td>
+</tr>
+{{template "category_rows" .Children}}
+{{end}}
+{{end}}

@@ -1,0 +1,10 @@
+{{define "flash"}}
+{{range .Flash}}
+<div class="alert alert-{{.Type}} alert-dismissible" role="alert">
+  <div class="d-flex">
+    <div>{{.Text}}</div>
+    <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="关闭"></button>
+  </div>
+</div>
+{{end}}
+{{end}}

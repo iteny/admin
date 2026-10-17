@@ -1,0 +1,29 @@
+{{define "confirm_modal"}}
+<div class="modal modal-blur fade" id="modal-confirm" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="关闭"></button>
+      <div class="modal-status bg-danger"></div>
+      <div class="modal-body text-center py-4">
+        <i class="ti ti-alert-triangle text-danger" style="font-size: 2rem"></i>
+        <h3 class="mt-3">确认删除？</h3>
+        <div class="text-secondary" id="confirm-message">此操作不可撤销。</div>
+      </div>
+      <div class="modal-footer">
+        <div class="w-100">
+          <div class="row">
+            <div class="col"><button type="button" class="btn w-100" data-bs-dismiss="modal">取消</button></div>
+            <div class="col">
+              <form method="post" id="confirm-form">
+                <input type="hidden" name="_csrf" value="{{.CSRFToken}}">
+                <input type="hidden" name="_method" value="DELETE">
+                <button type="submit" class="btn btn-danger w-100">确认删除</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{{end}}

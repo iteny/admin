@@ -1,0 +1,63 @@
+{{define "content"}}
+<div class="page-header d-print-none">
+  <div class="row g-2 align-items-center">
+    <div class="col"><div class="page-pretitle">{{.Pretitle}}</div><h2 class="page-title">{{.Title}}</h2></div>
+    <div class="col-auto ms-auto">
+      <form method="post" action="/admin/logs/clear" onsubmit="return confirm('确定清空全部操作日志？')">
+        <input type="hidden" name="_csrf" value="{{.CSRFToken}}">
+        <button class="btn btn-outline-danger" type="submit">清空日志</button>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="card">
+  <div class="card-header">
+    <form class="row g-2 w-100" method="get" action="/admin/logs">
+      <div class="col-md-3"><input type="text" class="form-control" name="keyword" value="{{.QueryValues.Get "keyword"}}" placeholder="用户/动作/路径"></div>
+      <div class="col-md-2"><select class="form-select" name="module"><option value="">全部模块</option><option value="articles" {{if eq .Filter.Module "articles"}}selected{{end}}>文章</option><option value="categories" {{if eq .Filter.Module "categories"}}selected{{end}}>分类</option><option value="users" {{if eq .Filter.Module "users"}}selected{{end}}>用户</option><option value="settings" {{if eq .Filter.Module "settings"}}selected{{end}}>设置</option></select></div>
+      <div class="col-md-2"><input type="date" class="form-control" name="from" value="{{.QueryValues.Get "from"}}"></div>
+      <div class="col-md-2"><input type="date" class="form-control" name="to" value="{{.QueryValues.Get "to"}}"></div>
+      <div class="col-md-3 d-flex gap-2"><button class="btn btn-primary flex-fill">筛选</button><a href="/admin/logs" class="btn btn-ghost-secondary">重置</a></div>
+    </form>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-vcenter card-table">
+      <thead><tr><th>时间</th><th>用户</th><th>模块</th><th>动作</th><th>IP</th><th>状态</th><th>耗时</th><th>详情</th></tr></thead>
+      <tbody>
+        {{range .Data.List}}
+        <tr>
+          <td class="text-secondary text-nowrap">{{fmtTime .CreatedAt}}</td>
+          <td>{{.Username}}</td>
+          <td>{{.Module}}</td>
+          <td class="text-truncate" style="max-width:240px">{{.Action}}</td>
+          <td class="text-secondary">{{.IP}}</td>
+          <td><span class="badge {{if lt .StatusCode 400}}bg-green-lt{{else}}bg-red-lt{{end}}">{{.StatusCode}}</span></td>
+          <td>{{.DurationMs}}ms</td>
+          <td><button type="button" class="btn btn-sm btn-ghost-secondary" data-bs-toggle="modal" data-bs-target="#log-detail-{{.ID}}">查看</button></td>
+        </tr>
+        {{else}}
+        <tr><td colspan="8" class="text-center text-secondary py-6">暂无操作日志</td></tr>
+        {{end}}
+      </tbody>
+    </table>
+  </div>
+  {{template "pagination" .}}
+</div>
+
+{{range .Data.List}}
+<div class="modal modal-blur fade" id="log-detail-{{.ID}}" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">操作详情 #{{.ID}}</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="关闭"></button></div>
+    <div class="modal-body">
+      <dl class="row">
+        <dt class="col-3">用户</dt><dd class="col-9">{{.Username}} (#{{.UserID}})</dd>
+        <dt class="col-3">动作</dt><dd class="col-9">{{.Action}}</dd>
+        <dt class="col-3">User-Agent</dt><dd class="col-9 text-break">{{.UserAgent}}</dd>
+        <dt class="col-3">请求数据</dt><dd class="col-9"><pre class="text-wrap">{{.Request}}</pre></dd>
+      </dl>
+    </div>
+    <div class="modal-footer"><button class="btn btn-link" data-bs-dismiss="modal">关闭</button></div>
+  </div></div>
+</div>
+{{end}}
+{{end}}

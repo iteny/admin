@@ -1,0 +1,44 @@
+{{define "admin_header"}}
+<header class="navbar navbar-expand-md d-print-none">
+  <div class="container-xl">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-menu" aria-controls="sidebar-menu" aria-expanded="false" aria-label="切换导航">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="navbar-nav flex-row order-md-last ms-auto align-items-center">
+      <div class="nav-item d-none d-md-flex me-2">
+        <a href="/" target="_blank" rel="noopener" class="btn btn-ghost-secondary btn-icon" title="访问前台">
+          <i class="ti ti-world"></i>
+        </a>
+      </div>
+      <div class="nav-item me-2">
+        <button type="button" class="btn btn-ghost-secondary btn-icon" id="theme-toggle" title="切换深色模式" aria-label="切换深色模式">
+          <i class="ti ti-moon"></i>
+        </button>
+      </div>
+      {{with .User}}
+      <div class="nav-item dropdown">
+        <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="用户菜单">
+          {{if .Avatar}}
+          <span class="avatar avatar-sm" style="background-image: url('{{.Avatar}}')"></span>
+          {{else}}
+          <span class="avatar avatar-sm bg-primary-lt">{{initial .Nickname}}</span>
+          {{end}}
+          <div class="d-none d-xl-block ps-2">
+            <div>{{.Nickname}}</div>
+            <div class="mt-1 small text-secondary">{{.Role.Name}}</div>
+          </div>
+        </a>
+        <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+          <a href="/admin/profile" class="dropdown-item"><i class="ti ti-user me-2"></i>个人中心</a>
+          <div class="dropdown-divider"></div>
+          <form method="post" action="/admin/logout">
+            <input type="hidden" name="_csrf" value="{{$.CSRFToken}}">
+            <button type="submit" class="dropdown-item text-danger"><i class="ti ti-logout me-2"></i>退出登录</button>
+          </form>
+        </div>
+      </div>
+      {{end}}
+    </div>
+  </div>
+</header>
+{{end}}

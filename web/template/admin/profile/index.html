@@ -1,0 +1,38 @@
+{{define "content"}}
+<div class="page-header d-print-none">
+  <div class="row g-2 align-items-center">
+    <div class="col"><div class="page-pretitle">{{.Pretitle}}</div><h2 class="page-title">{{.Title}}</h2></div>
+  </div>
+</div>
+<div class="row row-cards">
+  <div class="col-lg-6">
+    <form method="post" action="/admin/profile" class="card">
+      <input type="hidden" name="_csrf" value="{{.CSRFToken}}">
+      <div class="card-header"><h3 class="card-title">个人资料</h3></div>
+      <div class="card-body">
+        <div class="mb-3"><label class="form-label">用户名</label><input type="text" class="form-control" value="{{.Profile.Username}}" readonly></div>
+        <div class="mb-3"><label class="form-label">昵称</label><input type="text" class="form-control" name="nickname" value="{{.Profile.Nickname}}" maxlength="50"></div>
+        <div class="mb-3"><label class="form-label">邮箱</label><input type="email" class="form-control" name="email" value="{{.Profile.Email}}" maxlength="100"></div>
+        <div><label class="form-label">头像 URL</label><div class="input-group"><input type="text" class="form-control" name="avatar" id="profile-avatar" value="{{.Profile.Avatar}}"><button type="button" class="btn btn-outline-secondary media-picker" data-target="profile-avatar">选择</button></div></div>
+      </div>
+      <div class="card-footer"><button class="btn btn-primary" type="submit">保存资料</button></div>
+    </form>
+  </div>
+  <div class="col-lg-6">
+    <form method="post" action="/admin/profile/password" class="card">
+      <input type="hidden" name="_csrf" value="{{.CSRFToken}}">
+      <div class="card-header"><h3 class="card-title">修改密码</h3></div>
+      <div class="card-body">
+        <div class="mb-3"><label class="form-label">原密码</label><input type="password" class="form-control" name="old_password" required></div>
+        <div class="mb-3"><label class="form-label">新密码</label><input type="password" class="form-control" name="new_password" minlength="8" required></div>
+        <div><label class="form-label">确认新密码</label><input type="password" class="form-control" name="confirm_password" minlength="8" required></div>
+      </div>
+      <div class="card-footer"><button class="btn btn-primary" type="submit">修改密码</button></div>
+    </form>
+    <div class="card mt-3"><div class="card-body">
+      <div class="text-secondary">角色：{{.Profile.Role.Name}}</div>
+      <div class="text-secondary">最后登录：{{fmtTime .Profile.LastLoginAt}} · {{.Profile.LastLoginIP}}</div>
+    </div></div>
+  </div>
+</div>
+{{end}}

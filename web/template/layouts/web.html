@@ -1,0 +1,33 @@
+{{define "layout"}}<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="csrf-token" content="{{.CSRFToken}}">
+  <title>{{.Title}} - {{.SiteName}}</title>
+  <meta name="description" content="{{.Description}}">
+  <link rel="canonical" href="{{if .Canonical}}{{.Canonical}}{{else}}{{.CurrentPath}}{{end}}">
+  <meta property="og:site_name" content="{{.SiteName}}">
+  <meta property="og:title" content="{{.Title}}">
+  <meta property="og:description" content="{{.Description}}">
+  <meta property="og:type" content="{{if .Article}}article{{else}}website{{end}}">
+  {{if .Article}}<meta property="article:published_time" content="{{fmtTime .Article.PublishedAt}}">{{end}}
+  <link rel="stylesheet" href="/static/vendor/tabler/css/tabler.min.css">
+  <link rel="stylesheet" href="/static/vendor/tabler/css/tabler-themes.min.css">
+  <link rel="stylesheet" href="/static/vendor/tabler-icons/tabler-icons.min.css">
+  <link rel="stylesheet" href="/static/css/web.css">
+</head>
+<body class="layout-fluid">
+<script src="/static/vendor/tabler/js/tabler-theme.min.js"></script>
+{{template "web_header" .}}
+<main class="page-wrapper">
+  <div class="container-xl py-4">
+    {{template "flash" .}}
+    {{template "content" .}}
+  </div>
+</main>
+{{template "web_footer" .}}
+<script src="/static/vendor/tabler/js/tabler.min.js" defer></script>
+<script src="/static/js/web.js?v={{.Version}}" defer></script>
+</body>
+</html>{{end}}

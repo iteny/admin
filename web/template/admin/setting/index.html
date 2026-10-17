@@ -1,0 +1,56 @@
+{{define "content"}}
+<div class="page-header d-print-none">
+  <div class="row g-2 align-items-center">
+    <div class="col"><div class="page-pretitle">{{.Pretitle}}</div><h2 class="page-title">{{.Title}}</h2></div>
+  </div>
+</div>
+<form method="post" action="/admin/settings">
+  <input type="hidden" name="_csrf" value="{{.CSRFToken}}">
+  <div class="card">
+    <div class="card-header">
+      <ul class="nav nav-tabs card-header-tabs" data-bs-toggle="tabs" role="tablist">
+        <li class="nav-item" role="presentation"><a href="#tab-site" class="nav-link active" data-bs-toggle="tab" role="tab">站点设置</a></li>
+        <li class="nav-item" role="presentation"><a href="#tab-seo" class="nav-link" data-bs-toggle="tab" role="tab">SEO</a></li>
+        <li class="nav-item" role="presentation"><a href="#tab-upload" class="nav-link" data-bs-toggle="tab" role="tab">上传</a></li>
+        <li class="nav-item" role="presentation"><a href="#tab-mail" class="nav-link" data-bs-toggle="tab" role="tab">邮件</a></li>
+      </ul>
+    </div>
+    <div class="card-body">
+      <div class="tab-content">
+        <div class="tab-pane active show" id="tab-site">
+          <div class="row">
+            <div class="col-md-6 mb-3"><label class="form-label">站点名称</label><input type="text" class="form-control" name="site_name" value="{{index .Site "site_name"}}"></div>
+            <div class="col-md-6 mb-3"><label class="form-label">备案号</label><input type="text" class="form-control" name="site_icp" value="{{index .Site "site_icp"}}"></div>
+            <div class="col-md-6 mb-3"><label class="form-label">Logo</label><div class="input-group"><input type="text" class="form-control" name="site_logo" id="site-logo" value="{{index .Site "site_logo"}}"><button type="button" class="btn btn-outline-secondary media-picker" data-target="site-logo">选择</button></div></div>
+            <div class="col-md-6 mb-3"><label class="form-label">Favicon</label><div class="input-group"><input type="text" class="form-control" name="site_favicon" id="site-favicon" value="{{index .Site "site_favicon"}}"><button type="button" class="btn btn-outline-secondary media-picker" data-target="site-favicon">选择</button></div></div>
+            <div class="col-12 mb-3"><label class="form-label">站点描述</label><textarea class="form-control" name="site_description" rows="2">{{index .Site "site_description"}}</textarea></div>
+            <div class="col-12"><label class="form-label">页脚</label><textarea class="form-control" name="site_footer" rows="2">{{index .Site "site_footer"}}</textarea></div>
+          </div>
+        </div>
+        <div class="tab-pane" id="tab-seo">
+          <div class="mb-3"><label class="form-label">默认标题</label><input type="text" class="form-control" name="seo_title" value="{{index .Site "seo_title"}}"></div>
+          <div class="mb-3"><label class="form-label">默认关键词</label><input type="text" class="form-control" name="seo_keywords" value="{{index .Site "seo_keywords"}}" placeholder="用英文逗号分隔"></div>
+          <div><label class="form-label">默认描述</label><textarea class="form-control" name="seo_description" rows="3">{{index .Site "seo_description"}}</textarea></div>
+        </div>
+        <div class="tab-pane" id="tab-upload">
+          <div class="row">
+            <div class="col-md-6 mb-3"><label class="form-label">最大文件大小（字节）</label><input type="number" class="form-control" name="upload_max_size" value="{{index .Site "upload_max_size"}}"></div>
+            <div class="col-md-6 mb-3"><label class="form-label">允许扩展名</label><input type="text" class="form-control" name="upload_allowed_ext" value="{{index .Site "upload_allowed_ext"}}" placeholder="jpg,jpeg,png,gif,webp,svg"></div>
+          </div>
+          <div class="text-secondary">修改上传配置后需重启服务生效（服务启动时读取配置）。</div>
+        </div>
+        <div class="tab-pane" id="tab-mail">
+          <div class="row">
+            <div class="col-md-6 mb-3"><label class="form-label">SMTP 主机</label><input type="text" class="form-control" name="mail_host" value="{{index .Site "mail_host"}}"></div>
+            <div class="col-md-6 mb-3"><label class="form-label">端口</label><input type="number" class="form-control" name="mail_port" value="{{index .Site "mail_port"}}"></div>
+            <div class="col-md-6 mb-3"><label class="form-label">用户名</label><input type="text" class="form-control" name="mail_username" value="{{index .Site "mail_username"}}"></div>
+            <div class="col-md-6 mb-3"><label class="form-label">密码</label><input type="password" class="form-control" name="mail_password" value="{{index .Site "mail_password"}}"></div>
+            <div class="col-md-6 mb-3"><label class="form-label">发件人</label><input type="email" class="form-control" name="mail_from" value="{{index .Site "mail_from"}}"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer"><button type="submit" class="btn btn-primary">保存设置</button></div>
+  </div>
+</form>
+{{end}}

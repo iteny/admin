@@ -1,0 +1,80 @@
+{{define "content"}}
+{{if .Home.Recommended}}
+<section class="mb-4">
+  <div class="row g-3">
+    {{range $index, $article := .Home.Recommended}}
+    <div class="col-12 {{if eq $index 0}}col-lg-8{{else}}col-lg-4{{end}}">
+      <a href="/article/{{$article.Slug}}" class="card card-link card-overlay h-100 text-decoration-none">
+        {{if $article.CoverURL}}<img src="{{$article.CoverURL}}" class="card-img-top" alt="{{$article.Title}}" style="height:{{if eq $index 0}}260{{else}}120{{end}}px;object-fit:cover">{{end}}
+        <div class="card-body">
+          <div class="text-secondary small mb-1">{{$article.Category.Name}} · {{fmtDate $article.PublishedAt}}</div>
+          <h2 class="h3 mb-2">{{$article.Title}}</h2>
+          <p class="text-secondary mb-0">{{truncate $article.Summary 80}}</p>
+        </div>
+      </a>
+    </div>
+    {{end}}
+  </div>
+</section>
+{{end}}
+
+<div class="row g-4">
+  <div class="col-lg-8">
+    <div class="d-flex align-items-center mb-3">
+      <h2 class="h3 m-0">最新文章</h2>
+      <span class="text-secondary ms-2">共 {{.Home.Total}} 篇</span>
+    </div>
+    <div class="row g-3">
+      {{range .Home.Latest}}
+      <div class="col-md-6">
+        <article class="card card-link h-100">
+          {{if .CoverURL}}<a href="/article/{{.Slug}}"><img src="{{.CoverURL}}" class="card-img-top" alt="{{.Title}}" style="height:170px;object-fit:cover"></a>{{end}}
+          <div class="card-body">
+            <div class="text-secondary small mb-2"><a href="/category/{{.Category.Slug}}" class="text-secondary">{{.Category.Name}}</a> · {{fmtDate .PublishedAt}} · {{.ViewCount}} 次浏览</div>
+            <h3 class="h4 mb-2"><a href="/article/{{.Slug}}" class="text-reset">{{.Title}}</a></h3>
+            <p class="text-secondary mb-2">{{truncate .Summary 100}}</p>
+            <div class="d-flex flex-wrap gap-1">
+              {{range .Tags}}<a href="/tag/{{.Slug}}" class="badge bg-blue-lt text-decoration-none">{{.Name}}</a>{{end}}
+            </div>
+          </div>
+        </article>
+      </div>
+      {{else}}
+      <div class="col-12"><div class="card"><div class="card-body text-center text-secondary py-6">暂无已发布文章</div></div></div>
+      {{end}}
+    </div>
+    {{template "web_pagination" .}}
+  </div>
+
+  <aside class="col-lg-4">
+    <div class="card mb-3">
+      <div class="card-header"><h3 class="card-title">置顶文章</h3></div>
+      <div class="list-group list-group-flush">
+        {{range .Home.Top}}
+        <a href="/article/{{.Slug}}" class="list-group-item list-group-item-action">
+          <div class="text-truncate">{{.Title}}</div>
+          <div class="text-secondary small">{{fmtDate .PublishedAt}}</div>
+        </a>
+        {{else}}<div class="list-group-item text-secondary">暂无置顶文章</div>{{end}}
+      </div>
+    </div>
+    <div class="card mb-3">
+      <div class="card-header"><h3 class="card-title">热门文章</h3></div>
+      <div class="list-group list-group-flush">
+        {{range .Home.Hot}}
+        <a href="/article/{{.Slug}}" class="list-group-item list-group-item-action">
+          <div class="text-truncate">{{.Title}}</div>
+          <div class="text-secondary small">{{.ViewCount}} 次浏览</div>
+        </a>
+        {{else}}<div class="list-group-item text-secondary">暂无文章</div>{{end}}
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><h3 class="card-title">标签云</h3></div>
+      <div class="card-body d-flex flex-wrap gap-2">
+        {{range .Home.Tags}}<a href="/tag/{{.Slug}}" class="badge bg-secondary-lt text-decoration-none">{{.Name}} ({{.UseCount}})</a>{{else}}<span class="text-secondary">暂无标签</span>{{end}}
+      </div>
+    </div>
+  </aside>
+</div>
+{{end}}

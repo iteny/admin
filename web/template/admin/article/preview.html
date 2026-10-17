@@ -1,0 +1,21 @@
+{{define "content"}}
+<div class="page-header d-print-none">
+  <div class="row g-2 align-items-center">
+    <div class="col"><div class="page-pretitle">文章预览</div><h2 class="page-title">{{.Article.Title}}</h2></div>
+    <div class="col-auto ms-auto"><a href="/admin/articles/{{.Article.ID}}/edit" class="btn btn-primary">返回编辑</a></div>
+  </div>
+</div>
+<div class="card">
+  <div class="card-body">
+    <div class="text-secondary mb-3">{{fmtTime .Article.PublishedAt}} · {{.Article.Author.Nickname}} · {{.Article.ViewCount}} 次浏览</div>
+    {{if eq (printf "%s" .Article.ContentType) "markdown"}}
+    <pre class="p-4 bg-surface-secondary rounded">{{.Article.Content}}</pre>
+    {{else}}
+    <div class="article-content">{{safeHTML .Article.Content}}</div>
+    {{end}}
+    {{if .Article.SubContent}}
+    <div class="article-subcontent mt-4 pt-4 border-top">{{safeHTML .Article.SubContent}}</div>
+    {{end}}
+  </div>
+</div>
+{{end}}

@@ -1,0 +1,14 @@
+{{define "web_footer"}}
+<footer class="footer footer-transparent d-print-none mt-auto">
+  <div class="container-xl">
+    <div class="row text-center align-items-center">
+      <div class="col-12 col-lg-auto mt-3 mt-lg-0">
+        <ul class="list-inline list-inline-dots mb-0">
+          <li class="list-inline-item">© {{.Year}} {{.SiteName}}</li>
+          {{with .Site}}{{if .site_icp}}<li class="list-inline-item"><a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">{{.site_icp}}</a></li>{{end}}{{end}}
+        </ul>
+      </div>
+    </div>
+  </div>
+</footer>
+{{end}}

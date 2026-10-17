@@ -1,0 +1,44 @@
+{{define "content"}}
+<div class="page-header d-print-none">
+  <div class="row g-2 align-items-center">
+    <div class="col"><div class="page-pretitle">{{.Pretitle}}</div><h2 class="page-title">{{.Title}}</h2></div>
+    <div class="col-auto ms-auto"><a href="/admin/roles" class="btn btn-ghost-secondary">返回列表</a></div>
+  </div>
+</div>
+{{if .Error}}<div class="alert alert-danger">{{.Error}}</div>{{end}}
+<form method="post" action="{{.ActionURL}}">
+  <input type="hidden" name="_csrf" value="{{.CSRFToken}}">
+  {{if .IsEdit}}<input type="hidden" name="_method" value="PUT">{{end}}
+  <div class="row row-cards">
+    <div class="col-lg-4">
+      <div class="card"><div class="card-body">
+        <div class="mb-3"><label class="form-label required">角色名称</label><input type="text" class="form-control" name="name" value="{{.Role.Name}}" required maxlength="50"></div>
+        <div class="mb-3"><label class="form-label required">角色标识</label><input type="text" class="form-control" name="slug" value="{{.Role.Slug}}" required maxlength="50" {{if .Role.IsSystem}}readonly{{end}}></div>
+        <div><label class="form-label">说明</label><textarea class="form-control" name="description" rows="3" maxlength="255">{{.Role.Description}}</textarea></div>
+      </div><div class="card-footer d-grid gap-2"><button class="btn btn-primary" type="submit">保存角色</button><a href="/admin/roles" class="btn btn-ghost-secondary">取消</a></div></div>
+    </div>
+    <div class="col-lg-8">
+      <div class="card">
+        <div class="card-header"><h3 class="card-title">权限</h3><div class="card-actions"><label class="form-check"><input type="checkbox" class="form-check-input" id="perm-check-all"><span class="form-check-label">全选</span></label></div></div>
+        <div class="card-body">
+          {{range .Groups}}
+          <div class="mb-4">
+            <h4 class="mb-2">{{.Name}}</h4>
+            <div class="row">
+              {{range .Perms}}
+              <div class="col-md-6">
+                <label class="form-check">
+                  <input type="checkbox" class="form-check-input perm-check" name="permission_ids" value="{{.ID}}" {{if index $.Selected .ID}}checked{{end}}>
+                  <span class="form-check-label">{{.Name}} <code class="text-secondary">{{.Code}}</code></span>
+                </label>
+              </div>
+              {{end}}
+            </div>
+          </div>
+          {{end}}
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+{{end}}

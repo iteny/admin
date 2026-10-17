@@ -1,0 +1,40 @@
+{{define "web_header"}}
+<header class="navbar navbar-expand-md navbar-light d-print-none">
+  <div class="container-xl">
+    <a href="/" class="navbar-brand navbar-brand-autodark">
+      <span class="fs-2 fw-bold">{{.SiteName}}</span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#front-nav" aria-controls="front-nav" aria-expanded="false" aria-label="切换导航">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="front-nav">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item"><a class="nav-link {{if eq .CurrentPath "/"}}active{{end}}" href="/">首页</a></li>
+        {{range .NavCategories}}
+        <li class="nav-item {{if .Children}}dropdown{{end}}">
+          {{if .Children}}
+          <a class="nav-link dropdown-toggle {{if menuActive $.CurrentPath (printf "/category/%s" .Category.Slug)}}active{{end}}" href="#" data-bs-toggle="dropdown">{{.Category.Name}}</a>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href="/category/{{.Category.Slug}}">{{.Category.Name}}</a>
+            {{range .Children}}<a class="dropdown-item" href="/category/{{.Category.Slug}}">{{.Category.Name}}</a>{{end}}
+          </div>
+          {{else}}
+          <a class="nav-link {{if menuActive $.CurrentPath (printf "/category/%s" .Category.Slug)}}active{{end}}" href="/category/{{.Category.Slug}}">{{.Category.Name}}</a>
+          {{end}}
+        </li>
+        {{end}}
+        {{range .NavPages}}
+        <li class="nav-item"><a class="nav-link {{if menuActive $.CurrentPath (printf "/p/%s" .Slug)}}active{{end}}" href="/p/{{.Slug}}">{{.Title}}</a></li>
+        {{end}}
+      </ul>
+      <form class="d-flex" action="/search" method="get" role="search">
+        <input class="form-control me-2" type="search" name="q" value="" placeholder="搜索文章" aria-label="搜索文章">
+        <button class="btn btn-outline-primary" type="submit"><i class="ti ti-search"></i></button>
+      </form>
+      <button type="button" class="btn btn-ghost-secondary btn-icon ms-2" id="theme-toggle" title="切换深色模式" aria-label="切换深色模式">
+        <i class="ti ti-moon"></i>
+      </button>
+    </div>
+  </div>
+</header>
+{{end}}

@@ -1,0 +1,107 @@
+{{define "content"}}
+<div class="page-header d-print-none">
+  <div class="row g-2 align-items-center">
+    <div class="col">
+      <div class="page-pretitle">{{.Pretitle}}</div>
+      <h2 class="page-title">{{.Title}}</h2>
+    </div>
+    <div class="col-auto ms-auto d-print-none">
+      <a href="/admin/articles/create" class="btn btn-primary"><i class="ti ti-plus me-1"></i>新增文章</a>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <form class="row g-2 w-100" method="get" action="/admin/articles">
+      <div class="col-md-4">
+        <input type="text" class="form-control" name="keyword" value="{{.Query.Keyword}}" placeholder="搜索标题或摘要">
+      </div>
+      <div class="col-md-2">
+        <select class="form-select" name="status">
+          <option value="">全部状态</option>
+          <option value="published" {{if eq .Status "published"}}selected{{end}}>已发布</option>
+          <option value="archived" {{if eq .Status "archived"}}selected{{end}}>已归档</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <select class="form-select" name="category_id">
+          <option value="">全部分类</option>
+          {{range .Categories}}<option value="{{.ID}}" {{if eq $.CategoryID .ID}}selected{{end}}>{{if gt .Depth 0}}　{{end}}{{.Name}}</option>{{end}}
+        </select>
+      </div>
+      <div class="col-md-2">
+        <select class="form-select" name="tag_id">
+          <option value="">全部标签</option>
+          {{range .Tags}}<option value="{{.ID}}" {{if eq $.TagID .ID}}selected{{end}}>{{.Name}}</option>{{end}}
+        </select>
+      </div>
+      <div class="col-md-2 d-flex gap-2">
+        <button type="submit" class="btn btn-primary flex-fill">筛选</button>
+        <a href="/admin/articles" class="btn btn-ghost-secondary">重置</a>
+      </div>
+    </form>
+  </div>
+
+  <form method="post" action="/admin/articles/batch" id="batch-form">
+    <input type="hidden" name="_csrf" value="{{.CSRFToken}}">
+    <div class="table-responsive">
+      <table class="table table-vcenter card-table">
+        <thead>
+          <tr>
+            <th class="w-1"><input type="checkbox" class="form-check-input" id="check-all"></th>
+            <th>文章</th>
+            <th>分类</th>
+            <th>状态</th>
+            <th>浏览</th>
+            <th>发布时间</th>
+            <th class="w-1">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{range .Data.List}}
+          <tr>
+            <td><input type="checkbox" class="form-check-input row-check" name="ids" value="{{.ID}}"></td>
+            <td>
+              <div class="d-flex align-items-center">
+                {{if .CoverURL}}<span class="avatar avatar-sm me-2" style="background-image:url('{{thumbURL .CoverURL}}')"></span>{{end}}
+                <div>
+                  <a href="/admin/articles/{{.ID}}/edit" class="fw-medium">{{.Title}}</a>
+                  {{if .IsTop}}<span class="badge bg-red-lt ms-1">置顶</span>{{end}}
+                  {{if .IsRecommend}}<span class="badge bg-azure-lt ms-1">推荐</span>{{end}}
+                  <div class="text-secondary small">{{truncate .Summary 60}}</div>
+                </div>
+              </div>
+            </td>
+            <td>{{.Category.Name}}</td>
+            <td><span class="badge {{statusClass (printf "%s" .Status)}}">{{statusText (printf "%s" .Status)}}</span></td>
+            <td>{{.ViewCount}}</td>
+            <td class="text-secondary">{{fmtTime .PublishedAt}}</td>
+            <td>
+              <div class="btn-list flex-nowrap">
+                <a href="/admin/articles/{{.ID}}/edit" class="btn btn-sm btn-ghost-secondary">编辑</a>
+                <a href="/admin/articles/{{.ID}}/preview" target="_blank" class="btn btn-sm btn-ghost-secondary">预览</a>
+                <button type="button" class="btn btn-sm btn-ghost-danger confirm-delete" data-url="/admin/articles/{{.ID}}/delete" data-name="{{.Title}}">删除</button>
+              </div>
+            </td>
+          </tr>
+          {{else}}
+          <tr><td colspan="7"><div class="text-center text-secondary py-6"><i class="ti ti-inbox" style="font-size:2rem"></i><div class="mt-2">暂无文章</div><a href="/admin/articles/create" class="btn btn-primary mt-3">写第一篇文章</a></div></td></tr>
+          {{end}}
+        </tbody>
+      </table>
+    </div>
+    <div class="card-footer d-flex align-items-center gap-2">
+      <select name="batch_action" class="form-select w-auto">
+        <option value="">批量操作</option>
+        <option value="publish">发布</option>
+        <option value="archive">归档</option>
+        <option value="delete">删除</option>
+      </select>
+      <button type="submit" class="btn btn-outline-secondary" onclick="return confirm('确定执行批量操作？')">执行</button>
+      <p class="m-0 text-secondary ms-auto">共 {{.Data.Total}} 条</p>
+    </div>
+  </form>
+  {{template "pagination" .}}
+</div>
+{{end}}

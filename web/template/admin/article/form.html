@@ -1,0 +1,114 @@
+{{define "content"}}
+<div class="page-header d-print-none">
+  <div class="row g-2 align-items-center">
+    <div class="col">
+      <div class="page-pretitle">{{.Pretitle}}</div>
+      <h2 class="page-title">{{.Title}}</h2>
+    </div>
+    <div class="col-auto ms-auto d-print-none">
+      <a href="/admin/articles" class="btn btn-ghost-secondary">返回列表</a>
+    </div>
+  </div>
+</div>
+
+{{if .Error}}<div class="alert alert-danger">{{.Error}}</div>{{end}}
+
+<form method="post" action="{{.ActionURL}}" class="row row-cards">
+  <input type="hidden" name="_csrf" value="{{.CSRFToken}}">
+  {{if .IsEdit}}<input type="hidden" name="_method" value="PUT">{{end}}
+
+  <div class="col-lg-9">
+    <div class="card">
+      <div class="card-body">
+        <div class="mb-3">
+          <label class="form-label required" for="title">标题</label>
+          <input type="text" class="form-control form-control-lg" id="title" name="title" value="{{.Article.Title}}" required maxlength="200" placeholder="输入文章标题">
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="slug">Slug</label>
+          <input type="text" class="form-control" id="slug" name="slug" value="{{.Article.Slug}}" maxlength="200" placeholder="留空自动生成">
+          <div class="form-hint">用于前台 URL：/article/<span id="slug-preview">{{.Article.Slug}}</span></div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="summary">摘要</label>
+          <textarea class="form-control" id="summary" name="summary" rows="3" maxlength="500" placeholder="列表页展示的简短摘要">{{.Article.Summary}}</textarea>
+        </div>
+        <div class="mb-3">
+          <label class="form-label required" for="content">正文</label>
+          <textarea class="form-control rich-editor" id="content" name="content" rows="18">{{.Article.Content}}</textarea>
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="sub_content">副文</label>
+          <textarea class="form-control rich-editor" id="sub_content" name="sub_content" rows="8">{{.Article.SubContent}}</textarea>
+          <div class="form-hint">显示在正文下方，可留空。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mt-3">
+      <div class="card-header"><h3 class="card-title">SEO</h3></div>
+      <div class="card-body">
+        <div class="mb-3"><label class="form-label">SEO 标题</label><input type="text" class="form-control" name="seo_title" value="{{.Article.SeoTitle}}" maxlength="100"></div>
+        <div class="mb-3"><label class="form-label">关键词</label><input type="text" class="form-control" name="seo_keywords" value="{{.Article.SeoKeywords}}" maxlength="200" placeholder="用英文逗号分隔"></div>
+        <div><label class="form-label">SEO 描述</label><textarea class="form-control" name="seo_description" rows="2" maxlength="255">{{.Article.SeoDescription}}</textarea></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-3">
+    <div class="card">
+      <div class="card-header"><h3 class="card-title">发布设置</h3></div>
+      <div class="card-body">
+        <div class="mb-3">
+          <label class="form-label required" for="status">状态</label>
+          <select class="form-select" id="status" name="status">
+            <option value="published" {{if eq (printf "%s" .Article.Status) "published"}}selected{{end}}>发布</option>
+            <option value="archived" {{if eq (printf "%s" .Article.Status) "archived"}}selected{{end}}>归档</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="published_at">发布时间</label>
+          <input type="datetime-local" class="form-control" id="published_at" name="published_at" value="{{fmtInputTime .Article.PublishedAt}}">
+        </div>
+        <div class="mb-3">
+          <label class="form-label required" for="category_id">分类</label>
+          <select class="form-select" id="category_id" name="category_id" required>
+            <option value="">请选择分类</option>
+            {{range .Categories}}<option value="{{.ID}}" {{if eq $.Article.CategoryID .ID}}selected{{end}}>{{if gt .Depth 0}}　{{end}}{{.Name}}</option>{{end}}
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="tag_ids">标签</label>
+          <select class="form-select tom-select" id="tag_ids" name="tag_ids" multiple placeholder="选择标签">
+            {{range .Tags}}<option value="{{.ID}}" {{if index $.SelectedTags .ID}}selected{{end}}>{{.Name}}</option>{{end}}
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">推荐</label>
+          <label class="form-check form-switch"><input class="form-check-input" type="checkbox" name="is_top" {{if .Article.IsTop}}checked{{end}}><span class="form-check-label">置顶</span></label>
+          <label class="form-check form-switch"><input class="form-check-input" type="checkbox" name="is_recommend" {{if .Article.IsRecommend}}checked{{end}}><span class="form-check-label">首页推荐</span></label>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">封面图</label>
+          <div class="input-group mb-2">
+            <input type="text" class="form-control" id="cover_url" name="cover_url" value="{{.Article.CoverURL}}" placeholder="/uploads/...">
+            <button type="button" class="btn btn-outline-secondary media-picker" data-target="cover_url">选择</button>
+          </div>
+          {{if .Article.CoverURL}}<img src="{{thumbURL .Article.CoverURL}}" alt="封面" class="img-fluid rounded">{{end}}
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="content_type">正文类型</label>
+          <select class="form-select" id="content_type" name="content_type">
+            <option value="html" {{if eq (printf "%s" .Article.ContentType) "html"}}selected{{end}}>HTML</option>
+            <option value="markdown" {{if eq (printf "%s" .Article.ContentType) "markdown"}}selected{{end}}>Markdown</option>
+          </select>
+        </div>
+      </div>
+      <div class="card-footer d-grid gap-2">
+        <button type="submit" class="btn btn-primary">保存文章</button>
+        <a href="/admin/articles" class="btn btn-ghost-secondary">取消</a>
+      </div>
+    </div>
+  </div>
+</form>
+{{end}}

@@ -1,0 +1,32 @@
+{{define "content"}}
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <h1 class="h2 mb-3">搜索文章</h1>
+    <form class="d-flex gap-2 mb-4" action="/search" method="get">
+      <input type="search" class="form-control form-control-lg" name="q" value="{{.Keyword}}" placeholder="输入关键词" aria-label="搜索关键词">
+      <button class="btn btn-primary btn-lg">搜索</button>
+    </form>
+    {{if .Keyword}}
+    <p class="text-secondary">关键词“{{.Keyword}}”共找到 {{.Total}} 篇文章</p>
+    <div class="row g-3">
+      {{range .Articles}}
+      <div class="col-12">
+        <article class="card card-link">
+          <div class="card-body">
+            <div class="text-secondary small mb-2">{{.Category.Name}} · {{fmtDate .PublishedAt}}</div>
+            <h2 class="h4 mb-2"><a href="/article/{{.Slug}}" class="text-reset">{{highlight .Title $.Keyword}}</a></h2>
+            <p class="text-secondary mb-0">{{highlight (truncate .Summary 140) $.Keyword}}</p>
+          </div>
+        </article>
+      </div>
+      {{else}}
+      <div class="col-12"><div class="card"><div class="card-body text-center text-secondary py-6">没有找到匹配的文章</div></div></div>
+      {{end}}
+    </div>
+    {{template "web_pagination" .}}
+    {{else}}
+    <div class="text-secondary">输入关键词开始搜索。</div>
+    {{end}}
+  </div>
+</div>
+{{end}}

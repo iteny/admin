@@ -1,0 +1,9 @@
+{{define "content"}}
+<nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="/">首页</a></li><li class="breadcrumb-item active">{{.Page.Title}}</li></ol></nav>
+<article class="row justify-content-center">
+  <div class="col-lg-9">
+    <h1 class="display-6 fw-bold mb-4">{{.Page.Title}}</h1>
+    <div class="article-content fs-4 lh-lg">{{safeHTML .Page.Content}}</div>
+  </div>
+</article>
+{{end}}
