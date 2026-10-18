@@ -71,6 +71,7 @@ type ArticleCard struct {
 	Slug        string         `json:"slug"`
 	Summary     string         `json:"summary"`
 	CoverURL    string         `json:"cover_url,omitempty"`
+	CategoryID  uint64         `json:"category_id"`
 	Category    *CategoryBrief `json:"category,omitempty"`
 	Tags        []TagBrief     `json:"tags"`
 	Author      *AuthorBrief   `json:"author,omitempty"`
@@ -355,6 +356,7 @@ func (h *Handler) card(item model.Article, base string) ArticleCard {
 		Slug:        item.Slug,
 		Summary:     item.Summary,
 		CoverURL:    absoluteURL(base, item.CoverURL),
+		CategoryID:  item.CategoryID,
 		Tags:        tagBriefs(item.Tags),
 		IsTop:       item.IsTop,
 		IsRecommend: item.IsRecommend,

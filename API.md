@@ -98,6 +98,7 @@ GET /api/v1/articles?page=1&page_size=10&include_content=1
         "slug": "article-slug",
         "summary": "文章摘要",
         "cover_url": "https://cms.example.com/uploads/2026/10/cover.png",
+        "category_id": 1,
         "category": {
           "id": 1,
           "name": "文章",
